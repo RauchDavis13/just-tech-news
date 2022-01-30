@@ -1,11 +1,9 @@
 const router = require('express').Router();
 const { Comment } = require('../../models');
 
-// get all comments
 router.get('/', (req, res) => {
-  console.log('======================');
   Comment.findAll()
-    .then(dbPostData => res.json(dbPostData))
+    .then(dbCommentData => res.json(dbCommentData))
     .catch(err => {
       console.log(err);
       res.status(500).json(err);
@@ -13,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // expects {title: 'Taskmaster goes public!', post_url: 'https://taskmaster.com/press', user_id: 1}
+  // expects => {comment_text: "This is the comment", user_id: 1, post_id: 2}
   Comment.create({
     comment_text: req.body.comment_text,
     user_id: req.body.user_id,
@@ -25,22 +23,19 @@ router.post('/', (req, res) => {
       res.status(400).json(err);
     });
 });
-router.delete('/:id', (req, res) => {
-
-});
 
 router.delete('/:id', (req, res) => {
-  Post.destroy({
+  Comment.destroy({
     where: {
       id: req.params.id
     }
   })
-    .then(dbPostData => {
-      if (!dbPostData) {
-        res.status(404).json({ message: 'No post found with this id' });
+    .then(dbCommentData => {
+      if (!dbCommentData) {
+        res.status(404).json({ message: 'No comment found with this id!' });
         return;
       }
-      res.json(dbPostData);
+      res.json(dbCommentData);
     })
     .catch(err => {
       console.log(err);
